@@ -11,6 +11,7 @@ import {
 import Pusher from 'pusher-js/react-native';
 import shortid from 'shortid';
 import Spinner from 'react-native-spinkit';
+import { homedir } from 'os';
 
 export default class Main extends Component {
   constructor() {
@@ -62,5 +63,74 @@ export default class Main extends Component {
 
        this.is_channel_binded = true;
      }
+   }
+
+   onChangeUsername(username) {
+     this.setState({ username });
+   }
+
+   onPressCreateRoom() {
+     let room_id = shortid.generate();
+     this.game_channel = this.pusher.subscribe('private-' + room_id);
+
+     Alert.alert(
+       'Share this room ID to your friend',
+       room_id,
+       [
+         {text: 'Done'},
+       ],
+       { cancelable: false }
+     );
+
+     this.setState({
+       piece: 'X',
+       is_waiting: true,
+       is_room_creator: true
+     });
+   }
+
+   onPressJoinRoom() {
+     this.setState({
+       show_prompt: true
+     });
+   }
+
+   render(){
+     return (
+       <View style={styles.container}>
+        <Header title={'React Native Pusher Game'}/>
+        <Spinner
+          style={styles.spinner}
+          isVisible={this.state.is_waiting}
+          size={75}
+          type={'WanderingCubes'}
+          color={'#549eff'}
+        />
+
+        {
+          !this.state.is_playing && !this.state.is_waiting &&
+          <Home
+            username={this.state.name}
+            onChangeUsername={this.onChangeUsername}
+            onPressCreateRoom={this.onPressCreateRoom}
+            onPressJoinRoom={this.onPressJoinRoom}
+            show_prompt={this.state.show_prompt}
+            onCancelJoinRoom={this.onCancelJoinRoom}
+          />
+        }
+
+        {
+          this.setState.is_playing &&
+          <Board
+            channel={this.game_channel}
+            username={this.state.username}
+            piece={this.state.piece}
+            rival_username={this.state.rival_username}
+            is_room_creator={this.state.is_room_creator}
+            endGame={this.endGame}
+          />
+        }
+       </View>
+     )
    }
 }
