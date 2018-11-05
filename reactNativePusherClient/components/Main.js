@@ -95,6 +95,39 @@ export default class Main extends Component {
      });
    }
 
+   joinRoom(room_id) {
+     this.game_channel = this.pusher.subscribe('private-' + room_id);
+     this.game_channel.trigger('client-joined', {
+       username: this.state.username
+     });
+
+     this.setState({
+       piece: 'O',
+       show_prompt: false,
+       is_waiting: true
+     });
+   }
+
+   onCancelJoinRoom() {
+     this.setState({
+       show_prompt: false
+     });
+   }
+
+   endGame() {
+     this.setState({
+       username: '',
+       piece: '',
+       rival_username: '',
+       is_playing: false,
+       show_prompt: false,
+       is_waiting: false,
+       is_room_creator: false
+     });
+     this.game_channel = null;
+     this.is_channel_binded = false;
+   }
+
    render(){
      return (
        <View style={styles.container}>
@@ -134,3 +167,17 @@ export default class Main extends Component {
      )
    }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    background: '#F5FCFF'
+  },
+  spinner: {
+    flex: 1,
+    alignSelf: 'center',
+    marginTop: 20,
+    marginBottom: 50
+  }
+});
