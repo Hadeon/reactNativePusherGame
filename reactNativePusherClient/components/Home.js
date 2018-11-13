@@ -1,14 +1,14 @@
-import React, { Components } from 'react';
+import React, { Component } from 'react';
 
 import {
   StyleSheet,
   Text,
-  Veiw,
+  View,
   TextInput,
   Button
 } from 'react-native';
 
-import Prompt from 'react-native-prompt';
+import Prompt from 'rn-prompt';
 
 export default class Home extends Component {
   render() {
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   text_input: {
-    backgroundColor: '#FFF',
+    backgroundColor: '#FFFFFF',
     height: 40,
     borderColor: '#CCC',
     borderWidth: 1

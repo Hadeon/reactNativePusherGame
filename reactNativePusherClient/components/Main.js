@@ -11,7 +11,10 @@ import {
 import Pusher from 'pusher-js/react-native';
 import shortid from 'shortid';
 import Spinner from 'react-native-spinkit';
-import { homedir } from 'os';
+
+import Header from './Header';
+import Home from './Home';
+import Board from './Board';
 
 export default class Main extends Component {
   constructor() {
@@ -29,25 +32,25 @@ export default class Main extends Component {
     this.game_channel = null;
     this.is_channel_binded = null;
 
-    this.onChangeUsername = this.onChangeUsername.bind(this);
-    this.onPressCreateRoom = this.onPressCreateRoom.bind(this);
-    this.onPressJoinRoom = this.onPressJoinRoom.bind(this);
-    this.joinRoom = this.joinRoom.bind(this);
-    this.onCancelJoinRoom = this.onCancelJoinRoom.bind(this);
-    this.endGame = this.endGame.bind(this);
+    this.onChangeUsername = this.onChangeUsername.bind(this); 
+    this.onPressCreateRoom = this.onPressCreateRoom.bind(this); 
+    this.onPressJoinRoom = this.onPressJoinRoom.bind(this); 
+    this.joinRoom = this.joinRoom.bind(this); 
+    this.onCancelJoinRoom = this.onCancelJoinRoom.bind(this); 
+    this.endGame = this.endGame.bind(this); 
   }
 
   componentWillMount() {
-    this.puser = new Pusher('API KEY', {
-      authEndpoint: 'AUTH ENDPOINT',
-      cluster: 'APP CLUSTER',
+    this.pusher = new Pusher('6bb058bfde52c0ed935c', {
+      authEndpoint: '/pusher/auth',
+      cluster: 'us2',
       encrypted: true
     });
   }
 
    componentDidUpdate() {
      if(this.state.is_waiting && !this.is_channel_binded){
-       this.game_channel.bind('client-joined', (data) => {
+       this.game_channel.bind('joined', (data) => {
          this.setState({
            is_waiting: false,
            is_playing: true,
@@ -55,7 +58,7 @@ export default class Main extends Component {
          });
 
          if(this.state.is_room_creator){
-           this.game_channel.trigger('client-joined', {
+           this.game_channel.trigger('joined', {
              username: this.state.username
            });
          }
@@ -97,7 +100,7 @@ export default class Main extends Component {
 
    joinRoom(room_id) {
      this.game_channel = this.pusher.subscribe('private-' + room_id);
-     this.game_channel.trigger('client-joined', {
+     this.game_channel.trigger('joined', {
        username: this.state.username
      });
 
@@ -149,6 +152,7 @@ export default class Main extends Component {
             onPressJoinRoom={this.onPressJoinRoom}
             show_prompt={this.state.show_prompt}
             onCancelJoinRoom={this.onCancelJoinRoom}
+            joinRoom={this.joinRoom}
           />
         }
 
@@ -172,7 +176,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    background: '#F5FCFF'
+    backgroundColor: '#F5FCFF'
   },
   spinner: {
     flex: 1,

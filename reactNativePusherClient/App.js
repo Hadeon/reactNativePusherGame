@@ -16,15 +16,15 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
+import Main from './components/Main';
+
 
 type Props = {};
 export default class App extends Component<Props> {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        <Main/>
       </View>
     );
   }
